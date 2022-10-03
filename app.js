@@ -1,6 +1,7 @@
 const express = require("express");
 const https = require("https");
 const bodyParser = require("body-parser");
+const Config = require("./config");
 
 const app = express();
 
@@ -26,10 +27,10 @@ app.post("/", function(req, res) {
         ]
     };
     const jsonData = JSON.stringify(data);
-    const url = "https://us18.api.mailchimp.com/3.0/lists/4ff454369a";
+    const url = "https://us18.api.mailchimp.com/3.0/lists/" + Config.list_id;
     const options = {
         method: "POST",
-        auth: "alam14:08fa8621fd63d962b655f76dcc269d60-us18"
+        auth: "alam14:" + Config.api_key
     };
     const request = https.request(url, options, function(response) {
         if (response.statusCode===200) {
@@ -47,41 +48,8 @@ app.post("/", function(req, res) {
 
 app.post("/failure", function(req, res) {
     res.redirect("/");
-})
-
-app.listen(process.env.PORT || 4000, function() {
-    console.log("server is running on port 4000.");
 });
 
-// API keys
-// 08fa8621fd63d962b655f76dcc269d60-us18
-
-// List/Audience ID
-// 4ff454369a
-
-// client.setConfig(
-//     {
-//         apiKey: "08fa8621fd63d962b655f76dcc269d60-us18",
-//         server: "us18"
-//     }
-// );
-// app.post("/", function(req, res) {
-//     const fName = req.body.fName;
-//     const lName = req.body.lName;
-//     const userEmail = req.body.userEmail;
-//     const subscribingUser = {
-//         firstName: fName, 
-//         lastName: lName, 
-//         email: req.body.userEmail
-//     };
-//     const run = async () => {
-//         const response = await client.lists.addListMember("4ff454369a", {
-//           email_address: subscribingUser.email,
-//           status: "subscribed",
-//           merge_fields: {
-//               FNAME: subscribingUser.firstName,
-//               LNAME: subscribingUser.lastName
-//           }
-//         });
-//         console.log(response); // (optional) 
-//       }; 
+app.listen(Config.port || 4000, function() {
+    console.log("server is running on port 4000.");
+});
